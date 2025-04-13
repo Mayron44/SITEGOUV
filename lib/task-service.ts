@@ -1,6 +1,6 @@
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabase } from "./supabase"
 import { getCurrentUser } from "./auth-service"
-const supabase = getSupabaseClient()
+
 export interface Task {
   id: string
   title: string
@@ -11,6 +11,8 @@ export interface Task {
 
 // Fonction pour récupérer toutes les tâches de l'utilisateur
 export async function getTasks(): Promise<Task[]> {
+  const supabase = getSupabase()
+
   try {
     const user = getCurrentUser()
     if (!user) return []
@@ -35,6 +37,8 @@ export async function getTasks(): Promise<Task[]> {
 
 // Fonction pour ajouter une tâche
 export async function addTask(title: string): Promise<Task | null> {
+  const supabase = getSupabase()
+
   try {
     const user = getCurrentUser()
     if (!user) return null
@@ -61,6 +65,8 @@ export async function addTask(title: string): Promise<Task | null> {
 
 // Fonction pour mettre à jour le statut d'une tâche
 export async function updateTaskStatus(taskId: string, status: "pending" | "completed"): Promise<boolean> {
+  const supabase = getSupabase()
+
   try {
     const user = getCurrentUser()
     if (!user) return false
@@ -81,6 +87,8 @@ export async function updateTaskStatus(taskId: string, status: "pending" | "comp
 
 // Fonction pour supprimer une tâche
 export async function deleteTask(taskId: string): Promise<boolean> {
+  const supabase = getSupabase()
+
   try {
     const user = getCurrentUser()
     if (!user) return false
