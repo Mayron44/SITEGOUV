@@ -1,6 +1,6 @@
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClient } from "./supabase"
 import { getCurrentUser } from "./auth-service"
-const supabase = getSupabaseClient()
+
 export interface Event {
   id: string
   title: string
@@ -17,7 +17,12 @@ export async function getEvents(): Promise<Event[]> {
     const user = getCurrentUser()
     if (!user) return []
 
-    const { data, error } = await supabase.from("events").select("*").order("date", { ascending: true })
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .order("date", { ascending: true })
 
     if (error) {
       console.error("Erreur lors de la récupération des événements:", error)
@@ -41,6 +46,8 @@ export async function addEvent(
   try {
     const user = getCurrentUser()
     if (!user) return null
+
+    const supabase = getSupabaseClient() // ✅ Création locale du client
 
     const event: Omit<Event, "id" | "created_at"> = {
       title,
@@ -69,6 +76,8 @@ export async function deleteEvent(eventId: string): Promise<boolean> {
   try {
     const user = getCurrentUser()
     if (!user) return false
+
+    const supabase = getSupabaseClient() // ✅ Création locale du client
 
     const { error } = await supabase.from("events").delete().eq("id", eventId)
 
