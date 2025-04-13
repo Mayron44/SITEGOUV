@@ -1,9 +1,10 @@
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClient } from "./supabase"
 import type { PageContent } from "@/components/page-content-provider"
-const supabase = getSupabaseClient()
+
 // Fonction pour récupérer tout le contenu du site
 export async function getAllSiteContent(): Promise<Record<string, PageContent>> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
     const { data, error } = await supabase.from("site_content").select("slug, content")
 
     if (error) {
@@ -26,6 +27,7 @@ export async function getAllSiteContent(): Promise<Record<string, PageContent>> 
 // Fonction pour récupérer le contenu d'une page spécifique
 export async function getPageContent(slug: string): Promise<PageContent | null> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
     const { data, error } = await supabase.from("site_content").select("content").eq("slug", slug).single()
 
     if (error) {
@@ -43,6 +45,7 @@ export async function getPageContent(slug: string): Promise<PageContent | null> 
 // Fonction pour sauvegarder le contenu d'une page
 export async function savePageContent(slug: string, content: PageContent): Promise<boolean> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
     const { error } = await supabase
       .from("site_content")
       .upsert({ slug, content, updated_at: new Date().toISOString() }, { onConflict: "slug" })
@@ -62,6 +65,7 @@ export async function savePageContent(slug: string, content: PageContent): Promi
 // Fonction pour sauvegarder tout le contenu du site
 export async function saveAllSiteContent(content: Record<string, PageContent>): Promise<boolean> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
     const promises = Object.entries(content).map(([slug, pageContent]) => {
       return supabase
         .from("site_content")
