@@ -1,4 +1,4 @@
-import { supabase } from "./supabase"
+import { supabase } from "@/lib/supabase"
 import { getCurrentUser } from "./auth-service"
 
 export interface Resource {
