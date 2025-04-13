@@ -1,4 +1,6 @@
-import { supabase } from "./supabase"
+import { getSupabaseClient } from "@/lib/supabase"
+
+const supabase = getSupabaseClient()
 
 export interface User {
   id: string
