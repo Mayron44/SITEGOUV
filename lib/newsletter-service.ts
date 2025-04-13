@@ -1,7 +1,7 @@
 // Service pour gérer les newsletters avec Supabase
-import { supabase } from "./supabase"
+import { getSupabaseClient } from "@/lib/supabase"
 import type { Newsletter, NewsletterSubscriber } from "@/components/page-content-provider"
-
+const supabase = getSupabaseClient()
 // Fonction pour récupérer toutes les newsletters
 export async function getNewsletters(): Promise<Newsletter[]> {
   try {
