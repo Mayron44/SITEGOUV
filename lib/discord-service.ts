@@ -1,7 +1,7 @@
 // Service pour l'envoi de messages Discord
 import type { Newsletter, NewsletterSubscriber } from "@/components/page-content-provider"
-import { supabase } from "@/lib/supabase"
-
+import { getSupabaseClient } from "@/lib/supabase"
+const supabase = getSupabaseClient()
 // Configuration du bot Discord
 interface DiscordConfig {
   token: string
