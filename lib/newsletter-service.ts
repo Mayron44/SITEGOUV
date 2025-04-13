@@ -1,10 +1,11 @@
-// Service pour gérer les newsletters avec Supabase
-import { getSupabaseClient } from "@/lib/supabase"
+import { getSupabaseClient } from "./supabase"
 import type { Newsletter, NewsletterSubscriber } from "@/components/page-content-provider"
-const supabase = getSupabaseClient()
+
 // Fonction pour récupérer toutes les newsletters
 export async function getNewsletters(): Promise<Newsletter[]> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const { data, error } = await supabase.from("newsletters").select("*").order("created_at", { ascending: false })
 
     if (error) {
@@ -30,6 +31,8 @@ export async function getNewsletters(): Promise<Newsletter[]> {
 // Fonction pour récupérer une newsletter par son ID
 export async function getNewsletterById(id: string): Promise<Newsletter | null> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const { data, error } = await supabase.from("newsletters").select("*").eq("id", id).single()
 
     if (error) {
@@ -57,6 +60,8 @@ export async function getNewsletterById(id: string): Promise<Newsletter | null> 
 // Fonction pour créer une nouvelle newsletter
 export async function createNewsletter(title: string, content: string, image?: string): Promise<Newsletter | null> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const newNewsletter = {
       title,
       content,
@@ -89,6 +94,8 @@ export async function createNewsletter(title: string, content: string, image?: s
 // Fonction pour mettre à jour une newsletter
 export async function updateNewsletter(id: string, title: string, content: string, image?: string): Promise<boolean> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const updates = {
       title,
       content,
@@ -124,6 +131,8 @@ export async function markNewsletterAsSent(id: string): Promise<boolean> {
     console.log("Données de mise à jour:", updates)
 
     // Vérifier d'abord si la newsletter existe
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const { data: existingData, error: checkError } = await supabase
       .from("newsletters")
       .select("id")
@@ -159,6 +168,8 @@ export async function markNewsletterAsSent(id: string): Promise<boolean> {
 // Fonction pour supprimer une newsletter
 export async function deleteNewsletter(id: string): Promise<boolean> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const { error } = await supabase.from("newsletters").delete().eq("id", id)
 
     if (error) {
@@ -176,6 +187,8 @@ export async function deleteNewsletter(id: string): Promise<boolean> {
 // Fonction pour récupérer tous les abonnés à la newsletter
 export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const { data, error } = await supabase
       .from("newsletter_subscribers")
       .select("*")
@@ -201,6 +214,8 @@ export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]
 // Fonction pour ajouter un nouvel abonné
 export async function addNewsletterSubscriber(name: string, discordId: string): Promise<NewsletterSubscriber | null> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const newSubscriber = {
       name,
       discord_id: discordId,
@@ -229,6 +244,8 @@ export async function addNewsletterSubscriber(name: string, discordId: string): 
 // Fonction pour supprimer un abonné
 export async function deleteNewsletterSubscriber(id: string): Promise<boolean> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
+
     const { error } = await supabase.from("newsletter_subscribers").delete().eq("id", id)
 
     if (error) {
