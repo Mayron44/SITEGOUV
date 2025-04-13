@@ -1,6 +1,6 @@
-import { supabase } from "./supabase"
+import { getSupabaseClient } from "@/lib/supabase"
 import { getCurrentUser } from "./auth-service"
-
+const supabase = getSupabaseClient()
 export interface Event {
   id: string
   title: string
