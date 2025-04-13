@@ -1,6 +1,4 @@
-import { getSupabaseClient } from "@/lib/supabase"
-
-const supabase = getSupabaseClient()
+import { getSupabaseClient } from "./supabase"
 
 export interface User {
   id: string
@@ -50,14 +48,14 @@ export async function login(username: string, password: string): Promise<User | 
         role: localUser.role,
       }
 
-      // Stocker l'utilisateur connecté
       localStorage.setItem("user", JSON.stringify(user))
       return user
     }
 
-    // Si pas trouvé en localStorage, essayer avec Supabase
+    // Sinon, on tente avec Supabase
     console.log("Tentative de connexion avec Supabase")
     try {
+      const supabase = getSupabaseClient() // ✅ création locale du client
       const { data, error } = await supabase
         .from("users")
         .select("*")
@@ -69,7 +67,6 @@ export async function login(username: string, password: string): Promise<User | 
 
       if (error) {
         console.error("Erreur Supabase détaillée:", JSON.stringify(error))
-        // Continuer avec la solution de secours
       } else if (data) {
         const user: User = {
           id: data.id,
@@ -77,7 +74,6 @@ export async function login(username: string, password: string): Promise<User | 
           role: data.role,
         }
 
-        // Stocker l'utilisateur connecté
         localStorage.setItem("user", JSON.stringify(user))
 
         // Ajouter l'utilisateur à la liste locale si pas déjà présent
@@ -95,10 +91,8 @@ export async function login(username: string, password: string): Promise<User | 
       }
     } catch (supabaseError) {
       console.error("Erreur lors de la connexion à Supabase:", supabaseError)
-      // Continuer avec la solution de secours
     }
 
-    // Si on arrive ici, aucune méthode n'a fonctionné
     console.log("Échec de connexion pour:", username)
     return null
   } catch (error) {
@@ -107,12 +101,10 @@ export async function login(username: string, password: string): Promise<User | 
   }
 }
 
-// Fonction pour se déconnecter
 export function logout(): void {
   localStorage.removeItem("user")
 }
 
-// Fonction pour vérifier si l'utilisateur est connecté
 export function getCurrentUser(): User | null {
   try {
     const userStr = localStorage.getItem("user")
@@ -124,7 +116,6 @@ export function getCurrentUser(): User | null {
   }
 }
 
-// Fonction pour vérifier si l'utilisateur est admin
 export function isAdmin(): boolean {
   const user = getCurrentUser()
   return user?.role === "admin" || false
