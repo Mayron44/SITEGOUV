@@ -1,7 +1,6 @@
-// Service pour l'envoi de messages Discord
 import type { Newsletter, NewsletterSubscriber } from "@/components/page-content-provider"
 import { getSupabaseClient } from "@/lib/supabase"
-const supabase = getSupabaseClient()
+
 // Configuration du bot Discord
 interface DiscordConfig {
   token: string
@@ -10,8 +9,6 @@ interface DiscordConfig {
 
 // Fonction pour formater le contenu avec le markdown simple
 const formatContentForDiscord = (content: string): string => {
-  // Discord utilise déjà le markdown, donc on peut simplement adapter notre format
-  // ** pour le gras, * pour l'italique, __ pour le souligné
   return content
     .replace(/<strong>(.*?)<\/strong>/g, "**$1**") // HTML vers Discord markdown
     .replace(/<em>(.*?)<\/em>/g, "*$1*")
@@ -30,7 +27,6 @@ export async function sendDirectMessage(
   }
 
   try {
-    // Utiliser notre API Route pour envoyer le message
     const response = await fetch("/api/discord/send-message", {
       method: "POST",
       headers: {
@@ -69,7 +65,6 @@ export async function sendNewsletterToSubscribers(
     errors: {} as Record<string, string>,
   }
 
-  // Préparer le contenu de la newsletter pour Discord
   let messageContent = `**${newsletter.title}**\n\n`
 
   if (newsletter.image) {
@@ -79,7 +74,6 @@ export async function sendNewsletterToSubscribers(
   messageContent += formatContentForDiscord(newsletter.content)
   messageContent += `\n\n---\nGouvernement de San Andreas\nNewsletter officielle - Ne pas répondre à ce message\n\nPour vous désinscrire: https://bdg/newsletter/unsubscribe.vercel.app`
 
-  // Envoyer à chaque abonné
   for (const subscriber of subscribers) {
     try {
       const result = await sendDirectMessage(subscriber.discordId, messageContent, config)
@@ -91,7 +85,6 @@ export async function sendNewsletterToSubscribers(
         results.errors[subscriber.discordId] = result.error || "Erreur inconnue"
       }
 
-      // Ajouter un délai pour éviter de dépasser les limites de l'API Discord
       await new Promise((resolve) => setTimeout(resolve, 1000))
     } catch (error) {
       results.failed++
@@ -106,6 +99,7 @@ export async function sendNewsletterToSubscribers(
 // Fonction pour obtenir la configuration Discord depuis Supabase
 export async function getDiscordConfig(): Promise<DiscordConfig> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
     const { data, error } = await supabase
       .from("discord_config")
       .select("*")
@@ -125,7 +119,6 @@ export async function getDiscordConfig(): Promise<DiscordConfig> {
     console.error("Error loading Discord config:", error)
   }
 
-  // Configuration par défaut (simulation)
   return {
     token: "",
     enabled: false,
@@ -135,6 +128,7 @@ export async function getDiscordConfig(): Promise<DiscordConfig> {
 // Fonction pour sauvegarder la configuration Discord dans Supabase
 export async function saveDiscordConfig(config: DiscordConfig): Promise<boolean> {
   try {
+    const supabase = getSupabaseClient() // ✅ Création locale du client
     const { error } = await supabase.from("discord_config").upsert({
       token: config.token,
       enabled: config.enabled,
