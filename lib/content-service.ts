@@ -1,6 +1,6 @@
-import { supabase } from "./supabase"
+import { getSupabaseClient } from "@/lib/supabase"
 import type { PageContent } from "@/components/page-content-provider"
-
+const supabase = getSupabaseClient()
 // Fonction pour récupérer tout le contenu du site
 export async function getAllSiteContent(): Promise<Record<string, PageContent>> {
   try {
