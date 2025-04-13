@@ -50,6 +50,8 @@ export default function Home() {
             id: section.id,
             title: section.title || "Default Title",
             content: section.content || "Default Content",
+            imagePosition: section.imagePosition || "default-position",
+            imageSize: section.imageSize || "default-size",
             ...section,
           })) || [],
           buttons: siteContent.accueil.buttons || [],
@@ -116,7 +118,11 @@ export default function Home() {
               {homeContent.sections.map((section, index) => (
                 <Section
                   key={section.id}
-                  section={section}
+                  section={{
+                    ...section,
+                    imagePosition: section.imagePosition || "default-position",
+                    imageSize: section.imageSize || "default-size",
+                  }}
                   index={index}
                   buttons={(homeContent.buttons || []).map((button) => ({
                     id: button.id || "default-id",
